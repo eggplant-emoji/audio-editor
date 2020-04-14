@@ -68,13 +68,22 @@ def reverse_audiodata(audiodata: AudioData) -> AudioData:
     return newaudiodata
 
 
+def join_audiodata(audiodata1: AudioData, audiodata2: AudioData) -> AudioData:
+    framesdata1 = audiodata1.framesdata
+    framesdata2 = audiodata2.framesdata
+    newframesdata = framesdata1 + framesdata2
+    frames_number1 = audiodata1.frames_number
+    frames_number2 = audiodata2.frames_number
+    newframes_number = frames_number1 + frames_number2
+    newparams = (audiodata1.channels_number, audiodata1.sample_width, audiodata1.framerate, newframes_number,
+              audiodata1.compression_type, audiodata1.compression_name)
+    newAudiodata = AudioData(newparams, newframesdata)
+    return newAudiodata
+
+
 a = wave.open('a.wav', 'rb')
 b = wave.open('b.wav', 'wb')
-
 audiodata = read_audiodata(a)
-newaudiodata = reverse_audiodata(audiodata)
+newaudiodata = join_audiodata(audiodata, audiodata)
 write_audiodata(b, newaudiodata)
 
-
-def join_audiodata(audiodata1: AudioData, audiodata2: AudioData) -> AudioData:
-    pass
