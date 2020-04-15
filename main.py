@@ -82,12 +82,11 @@ def frame_index_from_milis(audiodata: AudioData, milis: int) -> int:
 
 
 def crop_audiodata(audiodata: AudioData, start_milis: int, end_milis: int) -> AudioData:
-    framerate = audiodata.framerate
     framesdata = audiodata.framesdata
     start_frame_index = frame_index_from_milis(audiodata, start_milis)
     end_frame_index = frame_index_from_milis(audiodata, end_milis)
     newframesdata = framesdata[start_frame_index : end_frame_index]
-    newframes_number = len(framesdata[start_frame_index : end_frame_index])
+    newframes_number = len(framesdata[start_frame_index: end_frame_index])
     newparams = (audiodata.channels_number, audiodata.sample_width, audiodata.framerate, newframes_number,
                  audiodata.compression_type, audiodata.compression_name)
     return AudioData(newparams, newframesdata)
