@@ -4,7 +4,7 @@ from typing import List
 
 def split_frames_into_sounds(frames: bytes, characters_per_frame: int) -> List[bytes]:
     framesdata = []
-    for i in range(0, len(frames) // characters_per_frame, characters_per_frame):
+    for i in range(0, len(frames), characters_per_frame):
         framesdata.append(frames[i:i + characters_per_frame])
     return framesdata
 
@@ -84,6 +84,5 @@ def join_audiodata(audiodata1: AudioData, audiodata2: AudioData) -> AudioData:
 a = wave.open('a.wav', 'rb')
 b = wave.open('b.wav', 'wb')
 audiodata = read_audiodata(a)
-newaudiodata = join_audiodata(audiodata, audiodata)
-write_audiodata(b, newaudiodata)
+write_audiodata(b, audiodata)
 
