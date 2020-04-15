@@ -34,8 +34,7 @@ def read_audiodata(file: wave.Wave_read) -> AudioData:
     frames = file.readframes(frames_number)
     characters_per_frame = len(frames) // frames_number
     framesdata = split_frames_into_sounds(frames, characters_per_frame)
-    audiodata = AudioData(params, framesdata)
-    return audiodata
+    return AudioData(params, framesdata)
 
 
 def write_audiodata(file: wave.Wave_write, audiodata: AudioData) -> None:
@@ -56,16 +55,14 @@ def crop2_audiodata(audiodata: AudioData):
     compression_type = audiodata.compression_type
     compression_name = audiodata.compression_name
     newparams = (channels_number, sample_width, framerate, newframes_number, compression_type, compression_name)
-    newAudiodata = AudioData(newparams, newframes)
-    return newAudiodata
+    return AudioData(newparams, newframes)
 
 
 def reverse_audiodata(audiodata: AudioData) -> AudioData:
     newframes = audiodata.framesdata[::-1]
     params = (audiodata.channels_number, audiodata.sample_width, audiodata.framerate, audiodata.frames_number,
               audiodata.compression_type, audiodata.compression_name)
-    newaudiodata = AudioData(params, newframes)
-    return newaudiodata
+    return AudioData(params, newframes)
 
 
 def join_audiodata(audiodata1: AudioData, audiodata2: AudioData) -> AudioData:
@@ -77,12 +74,32 @@ def join_audiodata(audiodata1: AudioData, audiodata2: AudioData) -> AudioData:
     newframes_number = frames_number1 + frames_number2
     newparams = (audiodata1.channels_number, audiodata1.sample_width, audiodata1.framerate, newframes_number,
               audiodata1.compression_type, audiodata1.compression_name)
-    newAudiodata = AudioData(newparams, newframesdata)
-    return newAudiodata
+    return AudioData(newparams, newframesdata)
+
+
+def frame_index_from_milis(audiodata: AudioData, milis: int) -> int:
+    return (audiodata.framerate * milis) // 1000
+
+
+def crop_audiodata(audiodata: AudioData, start_milis: int, end_milis: int) -> AudioData:
+    framerate = audiodata.framerate
+    framesdata = audiodata.framesdata
+    start_frame_index = frame_index_from_milis(audiodata, start_milis)
+    end_frame_index = frame_index_from_milis(audiodata, end_milis)
+    newframesdata = framesdata[start_frame_index : end_frame_index]
+    newframes_number = len(framesdata[start_frame_index : end_frame_index])
+    newparams = (audiodata.channels_number, audiodata.sample_width, audiodata.framerate, newframes_number,
+                 audiodata.compression_type, audiodata.compression_name)
+    return AudioData(newparams, newframesdata)
+
+
+def erase_part_of_audiodata(audiodata: AudioData, strtmilis: int, endmilis: int) -> AudioData:
+    pass
 
 
 a = wave.open('a.wav', 'rb')
 b = wave.open('b.wav', 'wb')
 audiodata = read_audiodata(a)
-write_audiodata(b, audiodata)
+newaudiodata = crop_audiodata(audiodata, 50000, 70000)
+write_audiodata(b, newaudiodata)
 
