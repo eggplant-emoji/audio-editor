@@ -12,6 +12,7 @@ def split_frames_into_sounds(frames: bytes, characters_per_frame: int) -> List[b
 def join_framesdata(framesdata: List[bytes]) -> bytes:
     return b''.join(framesdata)
 
+
 class AudioData:
     channels_number: int
     sample_width: int
@@ -47,9 +48,8 @@ class AudioData:
         newframesdata = framesdata1 + framesdata2
         frames_number1 = self.frames_number
         frames_number2 = audiodata.frames_number
-        newframes_number = frames_number1 + frames_number2
-        newparams = (self.channels_number, self.sample_width, self.framerate, newframes_number,
-                     self.compression_type, self.compression_name)
+        new_frames_number = frames_number1 + frames_number2
+        newparams = self.get_params(frames_number=new_frames_number)
         return AudioData(newparams, newframesdata)
 
     def crop(self, start_milis: int, end_milis: int):
@@ -84,6 +84,6 @@ def erase_part_of_audiodata(audiodata: AudioData, strtmilis: int, endmilis: int)
 a = wave.open('a.wav', 'rb')
 b = wave.open('b.wav', 'wb')
 audiodata = AudioData.read(a)
-newaudiodata = audiodata.crop(50000, 70000)
+newaudiodata = audiodata.join()
 newaudiodata.write(b)
 
