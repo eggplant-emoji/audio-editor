@@ -34,6 +34,9 @@ class AudioData:
         """
         Creates new audiodata object
         params are the parameters returned by Wave_read.getparams()
+        params = (
+            channels_number, sample_width, framerate, frames_number, comp_type, comp_name
+        )
         framesdata is a list of bytes where each byte represents a sample in an audiofile
         """
         super().__init__()
