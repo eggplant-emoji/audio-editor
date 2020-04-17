@@ -1,7 +1,6 @@
 import wave
 from typing import List
 
-
 def split_frames_into_sounds(frames: bytes, characters_per_frame: int) -> List[bytes]:
     framesdata = []
     for i in range(0, len(frames), characters_per_frame):
@@ -62,6 +61,12 @@ class AudioData:
             self.compression_type if 'compression_type' not in overrides else overrides['compression_type'],
             self.compression_name if 'compression_name' not in overrides else overrides['compression_name']
         )
+
+    def duration(self) -> float:
+        """
+        Returns a number of miliseconds the audiofile should last
+        """
+        return self.frames_number * 1000 // self.framerate
 
     def reverse(self):
         """
