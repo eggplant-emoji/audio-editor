@@ -39,26 +39,29 @@ class AudioData:
         )
 
     def reverse(self):
-        newframes = self.framesdata[::-1]
-        return AudioData(self.get_params(), newframes)
+        new_frames = self.framesdata[::-1]
+        return AudioData(self.get_params(), new_frames)
 
     def join(self):
-        framesdata1 = self.framesdata
-        framesdata2 = audiodata.framesdata
-        newframesdata = framesdata1 + framesdata2
-        frames_number1 = self.frames_number
-        frames_number2 = audiodata.frames_number
-        new_frames_number = frames_number1 + frames_number2
-        newparams = self.get_params(frames_number=new_frames_number)
-        return AudioData(newparams, newframesdata)
+        """ Method for  compound two audiofiles
+        Accepts second file which will be join with first file
+        Returns AudioData"""
+        new_framesdata = self.framesdata + audiodata.framesdata
+        new_frames_number = self.frames_number + audiodata.frames_number
+        new_params = self.get_params(frames_number=new_frames_number)
+        return AudioData(new_params, new_framesdata)
 
     def crop(self, start_milis: int, end_milis: int):
+        """ Method for cropping an audiofile
+        Accepts audiodata and start_milis, end_milis
+        Creates a copy of audiodata that starts at [start_milis] miliseconds and ends at [end_milis] miliseconds
+        """
         start_frame_index = self.frame_index_from_milis(start_milis)
         end_frame_index = self.frame_index_from_milis(end_milis)
-        newframesdata = self.framesdata[start_frame_index: end_frame_index]
+        new_framesdata = self.framesdata[start_frame_index: end_frame_index]
         new_frames_number = len(self.framesdata[start_frame_index: end_frame_index])
-        newparams = self.get_params(frames_number=new_frames_number)
-        return AudioData(newparams, newframesdata)
+        new_params = self.get_params(frames_number=new_frames_number)
+        return AudioData(new_params, new_framesdata)
 
     def frame_index_from_milis(self, milis: int):
         return (self.framerate * milis) // 1000
@@ -76,14 +79,28 @@ class AudioData:
         framesdata = split_frames_into_sounds(frames, characters_per_frame)
         return AudioData(params, framesdata)
 
+    def speed_up(self, coefficient: int):
+        """ Method for speed-up an audiofile
+        Accepts audiofile and coefficient (how many times you need to speed-up the track)
 
-def erase_part_of_audiodata(audiodata: AudioData, strtmilis: int, endmilis: int) -> AudioData:
-    pass
+        Returns new audiofile """
+        new_framerate = self.framerate * coefficient
+        new_params = self.get_params(framerate=new_framerate)
+        return AudioData(new_params, self.framesdata)
+
+    def slow_down(self, coefficient: int):
+        """ Method for slow down an audiofile
+         Accepts audiofile and coefficient (how many times you need to slow down the track)
+         Returns new audiodata"""
+
+        new_framerate = self.framerate / coefficient
+        new_params = self.get_params(framerate=new_framerate)
+        return AudioData(new_params, self.framesdata)
 
 
 a = wave.open('a.wav', 'rb')
 b = wave.open('b.wav', 'wb')
 audiodata = AudioData.read(a)
-newaudiodata = audiodata.join()
+newaudiodata = audiodata.slow_down(10)
 newaudiodata.write(b)
 
