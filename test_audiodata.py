@@ -1,7 +1,6 @@
 import unittest
 from audiodata import AudioData
 
-
 framesdata = [b'ab', b'cd', b'ef', b'gh', b'ij']
 channels_number = 1
 sample_width = 16
@@ -14,6 +13,7 @@ audiodata1 = AudioData((2, 2, 60000, 5, 'NONE', 'not compressed'), [b'abcd', b'e
 audiodata2 = AudioData((2, 2, 60000, 4, 'NONE', 'not compressed'), [b'qwer', b'tyui', b'op[]', b'asdf'])
 
 one_frame_per_second = AudioData((2, 2, 1, 4, 'NONE', 'not compressed'), [b'qwer', b'tyui', b'op[]', b'asdf'])
+
 
 class TestAudioData(unittest.TestCase):
     def test_duration_is_correctly_calculated(self):
@@ -69,5 +69,7 @@ class TestAudioData(unittest.TestCase):
         actual = audiodata1.reverse().reverse()
         assert expected.framesdata == actual.framesdata
 
+
 if __name__ == '__main__':
     unittest.main()
+
