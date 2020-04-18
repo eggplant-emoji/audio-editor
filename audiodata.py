@@ -1,6 +1,7 @@
 import wave
 from typing import List
 
+
 def split_frames_into_sounds(frames: bytes, characters_per_frame: int) -> List[bytes]:
     framesdata = []
     for i in range(0, len(frames), characters_per_frame):
