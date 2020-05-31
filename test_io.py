@@ -2,7 +2,7 @@ import unittest
 import wave
 from audiodata import AudioData
 
-test_file_input = wave.open('test_input.wav', 'rb')
+test_file_input = wave.open('a.wav', 'rb')
 test_file_output = wave.open('test_output.wav', 'wb')
 
 
