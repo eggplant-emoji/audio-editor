@@ -38,7 +38,12 @@ class AudioData:
         params = (
             channels_number, sample_width, framerate, frames_number, comp_type, comp_name
         )
-        framesdata is a list of bytes where each byte represents a sample in an audiofile
+        Represents an audiofile, all the data it contains.
+    channels_number -- number of channels in the audiofile
+    framerate -- number of samples per second
+    frames_number -- total number of samples
+    compression_type -- only 'NONE' is supported
+    compression_name -- only 'not compressed' is supported
         """
         super().__init__()
         self.channels_number, self.sample_width, self.framerate, self.frames_number, self.compression_type, self.compression_name = params

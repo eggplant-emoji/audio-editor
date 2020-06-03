@@ -1,6 +1,7 @@
 import tkinter as tk
-from tkinter import filedialog
 import wave
+from tkinter import filedialog
+
 from audiodata import AudioData
 
 
@@ -23,12 +24,12 @@ class General(tk.Frame):
         self.filenumbers = filenumbers
         self.frame.pack()
         self.buttons = []
-        self.audiodatas = [None]*filenumbers
+        self.audiodatas = [None] * filenumbers
         self.create_widgets()
 
     def create_widgets(self):
         for i in range(self.filenumbers):
-            filebutton = tk.Button(self.frame, text='Файл'+' '+str(i+1), command=self.on_file_select(i))
+            filebutton = tk.Button(self.frame, text='Файл' + ' ' + str(i + 1), command=self.on_file_select(i))
             filebutton.pack()
             self.buttons.append(filebutton)
         self.label = tk.Label(self.frame, text="Выбрете все файлы")
@@ -42,6 +43,7 @@ class General(tk.Frame):
             self.audiodatas[button_id] = read_audiodata()
             if None not in self.audiodatas:
                 self.all_files_selected()
+
         return listener
 
     def on_submit(self):
@@ -135,9 +137,11 @@ class CropWindow(General):
     def __init__(self, master):
         super().__init__(master, 1)
 
-        self.slide1 = tk.Scale(self.body, from_=0, to=1, state='disabled', orient=tk.HORIZONTAL, command=self.correct_use)
+        self.slide1 = tk.Scale(self.body, from_=0, to=1, state='disabled', orient=tk.HORIZONTAL,
+                               command=self.correct_use)
         self.slide1.pack()
-        self.slide2 = tk.Scale(self.body, from_=0, to=1, state='disabled', orient=tk.HORIZONTAL, command=self.correct_use)
+        self.slide2 = tk.Scale(self.body, from_=0, to=1, state='disabled', orient=tk.HORIZONTAL,
+                               command=self.correct_use)
         self.slide2.pack()
 
     def correct_use(self, _):
