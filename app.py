@@ -4,6 +4,76 @@ import wave
 from audiodata import AudioData
 
 
+def read_audiodata():
+    filename = filedialog.askopenfilename()
+    a = wave.open(filename, 'rb')
+    audiodata = AudioData.read(a)
+    return audiodata
+
+
+class General(tk.Frame):
+    def __init__(self, master, filenumbers):
+        super().__init__(master)
+        self.body = None
+        self.label = None
+        self.submit = None
+        self.slide = None
+        self.master = master
+        self.frame = tk.Frame(self.master)
+        self.filenumbers = filenumbers
+        self.frame.pack()
+        self.buttons = []
+        self.audiodatas = [None]*filenumbers
+        self.create_widgets()
+
+    def create_widgets(self):
+        for i in range(self.filenumbers):
+            filebutton = tk.Button(self.frame, text='Файл'+' '+str(i+1), command=self.on_file_select(i))
+            filebutton.pack()
+            self.buttons.append(filebutton)
+        self.label = tk.Label(self.frame, text="Выбрете все файлы")
+        self.body = tk.Frame(self.frame)
+        self.body.pack()
+        self.submit = tk.Button(self.frame, text='подтвердить', state='disabled', command=self.on_submit)
+        self.submit.pack()
+
+    def on_file_select(self, button_id):
+        def listener():
+            self.audiodatas[button_id] = read_audiodata()
+            if None not in self.audiodatas:
+                self.all_files_selected()
+        return listener
+
+    def on_submit(self):
+        result = self.calculate_result()
+        output_file = wave.open('output.wav', 'wb')
+        result.write(output_file)
+
+    def calculate_result(self):
+        pass
+
+    def all_files_selected(self):
+        self.submit['state'] = 'normal'
+        self.label['text'] = ''
+
+    def show_error(self, text):
+        self.label['text'] = text
+        self.submit['state'] = 'disabled'
+
+    def close_error(self):
+        self.label['text'] = ''
+        self.submit['state'] = 'normal'
+
+
+class SpeedWindow(General):
+    def __init__(self, master, text):
+        super().__init__(master, 1)
+        self.l1 = tk.Label(self.body, text=text, font="Arial 13")
+        self.l1.pack()
+        self.edit = tk.Entry(self.body, width=20)
+        self.edit.pack()
+
+
 class Application(tk.Frame):
     def __init__(self, master=None):
         super().__init__(master)
@@ -53,151 +123,61 @@ class Application(tk.Frame):
         self.app4 = SlowDownWindow(self.newWindow)
 
 
-class JoinWindow(tk.Frame):
+class JoinWindow(General):
     def __init__(self, master):
-        super().__init__(master)
-        self.master = master
-        self.frame = tk.Frame(self.master)
-        self.file1 = tk.Button(self.frame, text='Первый файл', command=self.get_filename1)
-        self.file1.pack()
-        self.file2 = tk.Button(self.frame, text='Второй файл', command=self.get_filename2)
-        self.file2.pack()
-        self.submit = tk.Button(self.frame, text='Склеить', command=self.on_submit)
-        self.submit.pack()
-        self.frame.pack()
+        super().__init__(master, 2)
 
-    def get_filename1(self):
-        self.filename1 = filedialog.askopenfilename()
-
-    def get_filename2(self):
-        self.filename2 = filedialog.askopenfilename()
-
-    def on_submit(self):
-        a = wave.open(self.filename1, 'rb')
-        b = wave.open(self.filename2, 'rb')
-        audiodata1 = AudioData.read(a)
-        audiodata2 = AudioData.read(b)
-        result = audiodata1.join(audiodata2)
-        output_file = wave.open('output.wav', 'wb')
-        result.write(output_file)
+    def calculate_result(self):
+        return self.audiodatas[0].join(self.audiodatas[1])
 
 
-class CropWindow(tk.Frame):
+class CropWindow(General):
     def __init__(self, master):
-        super().__init__(master)
-        self.master = master
-        self.frame = tk.Frame(self.master)
-        self.file1 = tk.Button(self.frame, text='Файл', command=self.get_filename)
-        self.file1.pack()
+        super().__init__(master, 1)
 
-        self.submit = tk.Button(self.frame, text='Обрезать', command=self.on_submit)
-        self.submit.pack()
-        self.frame.pack()
-
-    def get_filename(self):
-        self.filename = filedialog.askopenfilename()
-        self.create_slider1()
-        self.create_slider2()
-
-    def create_slider1(self):
-        a = wave.open(self.filename, 'rb')
-        audiodata = AudioData.read(a)
-        self.slide1 = tk.Scale(self.frame, from_=0, to=audiodata.duration(), orient=tk.HORIZONTAL)
+        self.slide1 = tk.Scale(self.body, from_=0, to=1, state='disabled', orient=tk.HORIZONTAL, command=self.correct_use)
         self.slide1.pack()
-
-    def create_slider2(self):
-        a = wave.open(self.filename, 'rb')
-        audiodata = AudioData.read(a)
-        self.slide2 = tk.Scale(self.frame, from_=0, to=audiodata.duration(), orient=tk.HORIZONTAL)
+        self.slide2 = tk.Scale(self.body, from_=0, to=1, state='disabled', orient=tk.HORIZONTAL, command=self.correct_use)
         self.slide2.pack()
 
-    def on_submit(self):
-        a = wave.open(self.filename, 'rb')
-        audiodata = AudioData.read(a)
-        result = audiodata.crop(int(self.slide1.get()), int(self.slide2.get()))
-        output_file = wave.open('output.wav', 'wb')
-        result.write(output_file)
+    def correct_use(self, _):
+        if self.slide1.get() > self.slide2.get():
+            self.show_error('Неправильно выбраны значения')
+        else:
+            self.close_error()
+
+    def all_files_selected(self):
+        self.slide1['to'] = self.audiodatas[0].duration()
+        self.slide2['to'] = self.audiodatas[0].duration()
+        self.slide1['state'] = 'normal'
+        self.slide2['state'] = 'normal'
+
+    def calculate_result(self):
+        return self.audiodatas[0].crop(int(self.slide1.get()), int(self.slide2.get()))
 
 
-class ReverseWindow(tk.Frame):
+class ReverseWindow(General):
     def __init__(self, master):
-        super().__init__(master)
-        self.master = master
-        self.frame = tk.Frame(self.master)
-        self.file1 = tk.Button(self.frame, text='Файл', command=self.get_filename)
-        self.file1.pack()
+        super().__init__(master, 1)
 
-        self.submit = tk.Button(self.frame, text='Перевернуть', command=self.on_submit)
-        self.submit.pack()
-        self.frame.pack()
-
-    def get_filename(self):
-        self.filename = filedialog.askopenfilename()
-
-    def on_submit(self):
-        a = wave.open(self.filename, 'rb')
-        audiodata = AudioData.read(a)
-        result = audiodata.reverse()
-        output_file = wave.open('output.wav', 'wb')
-        result.write(output_file)
+    def calculate_result(self):
+        return self.audiodatas[0].reverse()
 
 
-class SpeedUpWindow(tk.Frame):
+class SpeedUpWindow(SpeedWindow):
     def __init__(self, master):
-        super().__init__(master)
-        self.master = master
-        self.frame = tk.Frame(self.master)
-        self.file1 = tk.Button(self.frame, text='Файл', command=self.get_filename)
-        self.file1.pack()
+        super().__init__(master, "Во сколько раз ускорить:")
 
-        self.l1 = tk.Label(self.frame, text="Во скаолько раз ускорить:", font="Arial 9")
-        self.l1.pack()
-
-        self.entry = tk.Entry(self.frame, width=20)
-        self.entry.pack()
-
-        self.submit = tk.Button(self.frame, text='Ускорить', command=self.on_submit)
-        self.submit.pack()
-        self.frame.pack()
-
-    def get_filename(self):
-        self.filename = filedialog.askopenfilename()
-
-    def on_submit(self):
-        a = wave.open(self.filename, 'rb')
-        audiodata = AudioData.read(a)
-        result = audiodata.speed_up(int(self.entry.get()))
-        output_file = wave.open('output.wav', 'wb')
-        result.write(output_file)
+    def calculate_result(self):
+        return self.audiodatas[0].speed_up(int(self.edit.get()))
 
 
-class SlowDownWindow(tk.Frame):
+class SlowDownWindow(SpeedWindow):
     def __init__(self, master):
-        super().__init__(master)
-        self.master = master
-        self.frame = tk.Frame(self.master)
-        self.file1 = tk.Button(self.frame, text='Файл', command=self.get_filename)
-        self.file1.pack()
+        super().__init__(master, "Во сколько раз замедлить:")
 
-        self.l1 = tk.Label(self.frame, text="Во скаолько раз замедлить:", font="Arial 9")
-        self.l1.pack()
-
-        self.entry = tk.Entry(self.frame, width=20)
-        self.entry.pack()
-
-        self.submit = tk.Button(self.frame, text='Замедлить', command=self.on_submit)
-        self.submit.pack()
-        self.frame.pack()
-
-    def get_filename(self):
-        self.filename = filedialog.askopenfilename()
-
-    def on_submit(self):
-        a = wave.open(self.filename, 'rb')
-        audiodata = AudioData.read(a)
-        result = audiodata.slow_down(int(self.entry.get()))
-        output_file = wave.open('output.wav', 'wb')
-        result.write(output_file)
+    def calculate_result(self):
+        return self.audiodatas[0].slow_down(int(self.edit.get()))
 
 
 root = tk.Tk()
