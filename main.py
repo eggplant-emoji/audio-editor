@@ -42,6 +42,11 @@ elif input_data[0] == 'crop':
     audiodata.crop(start_milis, end_milis)
     result = audiodata.crop(start_milis, end_milis)
 
+elif input_data[0] == 'bassboost':
+    a = wave.open(input_data[1], 'rb')
+    audiodata = AudioData.read(a)
+    result = audiodata.bassboost()
+
 elif input_data[0] == '-h' or input_data[0] == '--help':
     print(
         'crop file.wav start_milis end_milis -- will crop your file and return new file \n'
