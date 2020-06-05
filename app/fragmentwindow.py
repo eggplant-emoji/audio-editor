@@ -1,7 +1,7 @@
 from tkinter import Scale, HORIZONTAL
 
-from app.actionwindow import ActionWindow
-from core.track import TrackFragment, Track
+from actionwindow import ActionWindow
+from track import TrackFragment, Track
 
 
 class FragmentWindow(ActionWindow):

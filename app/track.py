@@ -1,6 +1,6 @@
 import wave
 
-from core.utils import chunked
+from utils import chunked
 
 
 class Frame:
@@ -136,8 +136,3 @@ def write_track(track: 'Track', filename: str):
     file = wave.open(filename, 'wb')
     file.setparams(track.metadata.as_tuple())
     file.writeframes(frames)
-
-
-t = WaveTrack('../a.wav')
-c = TrackFragment(t, 100000, 400000)
-write_track(c, '../cropped.wav')

@@ -1,6 +1,6 @@
 from typing import Dict, List
 
-from core.track import Track, WaveTrack, JoinedTrack, TrackFragment, SlowedDownTrack, SpedUpTrack, ReversedTrack
+from track import Track, WaveTrack, JoinedTrack, TrackFragment, SlowedDownTrack, SpedUpTrack, ReversedTrack
 
 workspace: Dict[str, 'Track'] = dict()
 

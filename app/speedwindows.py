@@ -1,7 +1,7 @@
 from tkinter import Label, Entry, Spinbox
 
-from app.actionwindow import ActionWindow
-from core.track import Track, SpedUpTrack, SlowedDownTrack
+from actionwindow import ActionWindow
+from track import Track, SpedUpTrack, SlowedDownTrack
 
 
 class SpeedWindow(ActionWindow):

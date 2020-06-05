@@ -2,8 +2,8 @@ from tkinter import Frame, Button, Label, StringVar, OptionMenu
 from typing import List, Dict
 from tkinter import ttk
 
-from app.workspace import workspace, add_to_workspace
-from core.track import Track
+from workspace import workspace, add_to_workspace
+from track import Track
 
 
 class ActionWindow(Frame):

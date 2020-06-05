@@ -2,8 +2,8 @@ from tkinter import Button, Frame, filedialog
 
 from pydub import AudioSegment
 
-from app.workspace import add_to_workspace
-from core.track import WaveTrack
+from workspace import add_to_workspace
+from track import WaveTrack
 
 
 class ImportWindow(Frame):

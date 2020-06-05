@@ -1,7 +1,7 @@
 from tkinter import Frame, Label, Entry, Button
 
-from app.actionwindow import ActionWindow
-from core.track import write_track
+from actionwindow import ActionWindow
+from track import write_track
 
 
 class ExportWindow(ActionWindow):

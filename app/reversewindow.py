@@ -1,5 +1,5 @@
-from app.actionwindow import ActionWindow
-from core.track import Track, ReversedTrack
+from actionwindow import ActionWindow
+from track import Track, ReversedTrack
 
 
 class ReverseWindow(ActionWindow):
