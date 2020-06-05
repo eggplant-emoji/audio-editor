@@ -24,7 +24,7 @@ class ActionWindow(Frame):
             self.selected_file_names.append(selected_file)
         self.body = Frame(self.frame)
         self.body.pack()
-        self.error_message = Label(self, text = "Select the files")
+        self.error_message = Label(self, text="Select the files")
         self.submit = Button(self.frame, text='подтвердить', state='disabled', command=self.on_submit)
         self.submit.pack()
         self.selected_tracks = [None] * file_number

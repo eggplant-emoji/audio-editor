@@ -50,7 +50,6 @@ class MainWindow(Frame):
         self.update_listbox()
         on_workspace_update(self.update_listbox)
 
-
     def update_listbox(self):
         self.listbox.delete(0, END)
         for file_name in workspace.keys():
