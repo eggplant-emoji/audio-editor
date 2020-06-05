@@ -39,11 +39,11 @@ class AudioData:
             channels_number, sample_width, framerate, frames_number, comp_type, comp_name
         )
         Represents an audiofile, all the data it contains.
-    channels_number -- number of channels in the audiofile
-    framerate -- number of samples per second
-    frames_number -- total number of samples
-    compression_type -- only 'NONE' is supported
-    compression_name -- only 'not compressed' is supported
+        channels_number -- number of channels in the audiofile
+        framerate -- number of samples per second
+        frames_number -- total number of samples
+        compression_type -- only 'NONE' is supported
+        compression_name -- only 'not compressed' is supported
         """
         super().__init__()
         self.channels_number, self.sample_width, self.framerate, self.frames_number, self.compression_type, self.compression_name = params
@@ -152,3 +152,11 @@ class AudioData:
         new_framerate = self.framerate / coefficient
         new_params = self.get_params(framerate=new_framerate)
         return AudioData(new_params, self.framesdata)
+    
+    def bassboost(self):
+        frames_channels = [split_frames_into_sounds(frame, self.sample_width) for frame in self.framesdata]
+        def bassboost_each(bts):
+            n = int.from_bytes(bts, byteorder='little')
+            return int(n // 2).to_bytes(self.sample_width, byteorder='little')
+        new_frame_channels = [[bassboost_each(channel) for channel in frame] for frame in frames_channels]
+        return AudioData(self.get_params(), [b''.join(frame) for frame in new_frame_channels])
