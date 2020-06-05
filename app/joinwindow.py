@@ -1,5 +1,5 @@
-from app.actionwindow import ActionWindow
-from core.track import Track, JoinedTrack
+from actionwindow import ActionWindow
+from track import Track, JoinedTrack
 
 
 class JoinWindow(ActionWindow):

@@ -1,13 +1,13 @@
 from tkinter import Button, Listbox, Frame, END, OptionMenu, Toplevel
 
-from app.exportwindow import ExportWindow
-from app.actionwindow import ActionWindow
-from app.fragmentwindow import FragmentWindow
-from app.importwindow import ImportWindow
-from app.joinwindow import JoinWindow
-from app.reversewindow import ReverseWindow
-from app.speedwindows import SpeedUpWindow, SlowDownWindow
-from app.workspace import workspace, on_workspace_update
+from exportwindow import ExportWindow
+from actionwindow import ActionWindow
+from fragmentwindow import FragmentWindow
+from importwindow import ImportWindow
+from joinwindow import JoinWindow
+from reversewindow import ReverseWindow
+from speedwindows import SpeedUpWindow, SlowDownWindow
+from workspace import workspace, on_workspace_update
 
 
 class MainWindow(Frame):
