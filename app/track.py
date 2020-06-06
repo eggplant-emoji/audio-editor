@@ -15,6 +15,9 @@ class Frame:
     def join(self) -> bytes:
         return b''.join(self.data)
 
+    def __eq__(self, other):
+        return isinstance(other, Frame) and list(other.data) == list(self.data)
+
 
 class Metadata:
     def __init__(self, channels_number, sample_width, frame_rate, frames_number, compression_type, compression_name):
